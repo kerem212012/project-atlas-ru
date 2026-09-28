@@ -1,0 +1,21 @@
+[project]
+name = "project-atlas"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi[standard]>=0.139,<1",
+  "sqlmodel>=0.0.39,<1",
+  "pydantic-settings>=2.10,<3",
+  "pwdlib[argon2]>=0.2,<1",
+  "itsdangerous>=2.2,<3",
+  "jinja2>=3.1,<4",
+  "boto3>=1.39,<2",
+  "google-genai>=2.13,<3",
+]
+
+[dependency-groups]
+dev = ["httpx2>=2,<3", "pytest>=8,<10"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

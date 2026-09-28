@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero"><p class="eyebrow">FASTAPI · AI · CLOUD</p><h1>Projects worth sharing</h1><p>Create a clear project page, improve its story with AI, and keep its cover in local or cloud storage.</p></section>
+<section class="grid">
+{% for project in projects %}
+  <article class="card">
+    {% if project.cover_url %}<img src="{{ project.cover_url }}" alt="">{% endif %}
+    <div><h2><a href="/projects/{{ project.id }}">{{ project.title }}</a></h2><p>{{ project.description[:150] }}</p></div>
+  </article>
+{% else %}<p class="empty">No projects yet. Register and publish the first one.</p>{% endfor %}
+</section>
+{% endblock %}

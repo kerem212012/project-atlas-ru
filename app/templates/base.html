@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}ProjectAtlas{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }}">
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="/">ProjectAtlas</a>
+    <nav>
+      {% if user %}
+        <a href="/projects/new">New project</a>
+        <form action="/logout" method="post"><button class="link-button">Log out</button></form>
+      {% else %}
+        <a href="/login">Log in</a><a href="/register">Register</a>
+      {% endif %}
+    </nav>
+  </header>
+  <main>{% block content %}{% endblock %}</main>
+</body>
+</html>

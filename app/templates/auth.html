@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}{{ mode|title }} · ProjectAtlas{% endblock %}
+{% block content %}
+<section class="panel narrow"><h1>{{ "Create account" if mode == "register" else "Welcome back" }}</h1>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+<form action="/{{ mode }}" method="post"><label>Username<input name="username" minlength="3" required></label><label>Password<input name="password" type="password" minlength="8" required></label><button>{{ "Register" if mode == "register" else "Log in" }}</button></form></section>
+{% endblock %}
