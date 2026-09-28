@@ -14,5 +14,6 @@ class Project(SQLModel, table=True):
     title: str = Field(index=True)
     description: str
     cover_url: str | None = None
+    cover_key: str | None = None
     owner_id: int = Field(foreign_key="user.id", index=True)
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))

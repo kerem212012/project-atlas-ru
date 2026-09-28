@@ -2,5 +2,5 @@
 {% block content %}
 <section class="panel"><p class="eyebrow">NEW PROJECT</p><h1>Turn an idea into a clear page</h1>
 {% if error %}<p class="error">{{ error }}</p>{% endif %}
-<form action="/projects" method="post" enctype="multipart/form-data"><label>Title<input name="title" minlength="2" maxlength="100" required></label><label>Description<textarea name="description" minlength="10" maxlength="5000" rows="8" required></textarea></label><label>Cover<input name="cover" type="file" accept="image/png,image/jpeg,image/webp"></label><label class="check"><input name="improve_with_ai" type="checkbox" value="true">Improve the description with AI</label><button>Publish project</button></form></section>
+<form action="/projects" method="post" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}"><label>Title<input name="title" minlength="2" maxlength="100" required></label><label>Description<textarea name="description" minlength="10" maxlength="5000" rows="8" required></textarea></label><label>Cover<input name="cover" type="file" accept="image/png,image/jpeg,image/webp"></label><label class="check"><input name="improve_with_ai" type="checkbox" value="true">Improve the description with AI</label><button>Publish project</button></form></section>
 {% endblock %}

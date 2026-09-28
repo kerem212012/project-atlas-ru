@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "ProjectAtlas: FastAPI dev",
+			"type": "shell",
+			"command": "C:\\Users\\rocks\\Downloads\\project-atlas-ru\\.venv\\Scripts\\fastapi.exe",
+			"args": [
+				"dev",
+				"app/main.py"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}
