@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -16,6 +17,7 @@ class Settings(BaseSettings):
     ai_backend: str = "demo"
     gemini_api_key: str | None = None
     gemini_model: str = "gemini-2.5-flash"
+    gemini_timeout_seconds: float = Field(default=20, gt=0, le=120)
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 

@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from pathlib import Path
 import secrets
+from collections.abc import Callable
 
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -15,7 +16,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from .config import settings
 from .database import SessionDep, create_db_and_tables, get_session
 from .models import Project, User
-from .services import DemoProvider, GeminiProvider, LocalStorage, S3Storage
+from .services import AIProvider, DemoProvider, GeminiProvider, LocalStorage, S3Storage
 
 BASE_DIR = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
@@ -55,10 +56,10 @@ def get_storage() -> LocalStorage | S3Storage:
     return LocalStorage(settings.local_storage_path)
 
 
-def get_ai_provider() -> DemoProvider | GeminiProvider:
+def get_ai_provider() -> Callable[[], AIProvider]:
     if settings.ai_backend.lower() == "gemini":
-        return GeminiProvider()
-    return DemoProvider()
+        return GeminiProvider
+    return DemoProvider
 
 
 templates.env.globals["csrf_token"] = csrf_token
@@ -197,7 +198,7 @@ async def create_project(
     request: Request,
     session: SessionDep,
     storage: LocalStorage | S3Storage = Depends(get_storage),
-    ai_provider: DemoProvider | GeminiProvider = Depends(get_ai_provider),
+    ai_provider_factory: Callable[[], AIProvider] = Depends(get_ai_provider),
     title: str = Form(min_length=2, max_length=100),
     description: str = Form(min_length=10, max_length=5000),
     cover: UploadFile | None = File(default=None),
@@ -228,13 +229,19 @@ async def create_project(
             extension, content_type = ".webp", "image/webp"
         else:
             raise HTTPException(status_code=415, detail="Unsupported cover image")
+        if cover.content_type != content_type:
+            raise HTTPException(status_code=415, detail="Unsupported cover image")
         cover_key, cover_url = await run_in_threadpool(
             storage.save, content, extension, content_type
         )
 
     if improve_with_ai:
         try:
-            description = ai_provider.improve_description(description)
+            description = await ai_provider_factory().improve_description(title, description)
+        except TimeoutError:
+            if cover_key is not None:
+                storage.delete(cover_key)
+            raise HTTPException(status_code=504, detail="Description improvement timed out")
         except Exception:
             if cover_key is not None:
                 storage.delete(cover_key)
