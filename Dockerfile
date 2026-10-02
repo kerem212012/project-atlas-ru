@@ -5,7 +5,7 @@ RUN useradd --create-home --uid 10001 appuser
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 COPY --chown=appuser:appuser app ./app
-RUN mkdir -p /app/uploads && chown appuser:appuser /app/uploads
+RUN mkdir -p /app/data /app/uploads && chown appuser:appuser /app/data /app/uploads
 ENV PATH="/app/.venv/bin:$PATH"
 USER appuser
 EXPOSE 8000
